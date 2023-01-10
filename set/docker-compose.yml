@@ -1,0 +1,26 @@
+version: '3'
+services:
+  junny-db:
+    image: mysql:8.0
+    container_name: junny-container
+    restart: always
+    ports:
+      - 3336:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      TZ: Asia/Seoul
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    platform: linux/x86_64
+  gunny-db:
+    image: mysql:8.0
+    container_name: gunny-container
+    restart: always
+    ports:
+      - 3337:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      TZ: Asia/Seoul
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    platform: linux/x86_64
