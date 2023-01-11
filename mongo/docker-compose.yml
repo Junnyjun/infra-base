@@ -1,0 +1,39 @@
+version: '3'
+services:
+  mongo1:
+    platform: linux/arm64
+    image: mongo-rep:0.0.1
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "27021:27017"
+    networks:
+      - mongo-networks
+    command: mongod --replSet replication
+
+  mongo2:
+    platform: linux/arm64 
+    image: "mongo"
+    ports:
+      - "27022:27017"
+    networks:
+      - mongo-networks
+    command: mongod --replSet replication
+    depends_on:
+      - mongo1
+
+  mongo3:
+    platform: linux/arm64
+    image: "mongo"
+    ports:
+      - "27023:27017"
+    networks:
+      - mongo-networks
+    command: mongod --replSet replication
+    depends_on:
+      - mongo2
+
+networks:
+  mongo-networks:
+    driver: bridge
