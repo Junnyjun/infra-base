@@ -1,7 +1,6 @@
 version: '3'
 services:
   mongo1:
-    platform: linux/arm64
     image: mongo-rep:0.0.1
     build:
       context: .
@@ -13,7 +12,6 @@ services:
     command: mongod --replSet replication
 
   mongo2:
-    platform: linux/arm64 
     image: "mongo"
     ports:
       - "27022:27017"
@@ -24,7 +22,6 @@ services:
       - mongo1
 
   mongo3:
-    platform: linux/arm64
     image: "mongo"
     ports:
       - "27023:27017"

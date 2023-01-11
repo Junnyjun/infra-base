@@ -1,7 +1,6 @@
 version: '2'
 services:
   zookeeper-1:
-    platform: linux/arm64
     container_name: zookeeper-1
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -14,7 +13,7 @@ services:
       - "22181:2181"
 
   zookeeper-2:
-    platform: linux/arm64
+     
     container_name: zookeeper-2
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -27,7 +26,6 @@ services:
       - "32181:2181"
 
   zookeeper-3:
-    platform: linux/arm64
     container_name: zookeeper-3
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -40,7 +38,6 @@ services:
       - "42181:2181"
 
   kafka-1:
-    platform: linux/arm64
     container_name: kafka-1
     image: confluentinc/cp-kafka:latest
     depends_on:
@@ -59,7 +56,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
   kafka-2:
-    platform: linux/arm64
     container_name: kafka-2
     image: confluentinc/cp-kafka:latest
     depends_on:
@@ -78,7 +74,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
   kafka-3:
-    platform: linux/arm64
     container_name: kafka-3
     image: confluentinc/cp-kafka:latest
     depends_on:
@@ -97,7 +92,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
   kafka-ui:
-    platform: linux/arm64
     image: provectuslabs/kafka-ui
     container_name: kafka-ui
     ports:
