@@ -1,4 +1,7 @@
 #! /bin/bash
+echo "UPDATE APT"
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
 echo "SET TIME ZONE"
 sudo timedatectl set-timezone Asia/Seoul
