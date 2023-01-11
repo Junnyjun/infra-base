@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=junny
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=mydb
+    ports:
+      - '5432:5432'
+    volumes:
+      - ~/postgresql/data/:/docker-entrypoint-initdb.d/
+      - ~/postgresql/data/:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 8088:80
+      - 8181:443
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=junny@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=1234
