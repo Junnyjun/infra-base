@@ -1,0 +1,99 @@
+version: '2'
+services:
+  es01:
+    platform: linux/arm64
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: es01
+    environment:
+      # Master 노드 es01은 localhost:9200 포트를 listens 하고있다.
+      - node.name=es01
+      # es cluster name
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      # elasticsearch memory swap config
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
+  es02:
+    platform: linux/arm64
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    ports:
+      - 9301:9300
+    networks:
+      - elastic
+  es03:
+    platform: linux/arm64
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    ports:
+      - 9302:9300
+    networks:
+      - elastic
+  kibana:
+    platform: linux/arm64
+    container_name: kibana
+    image: arm64v8/kibana:8.6.0
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: es01:9200
+    ports:
+      - 5601:5601
+    # Elasticsearch Start Dependency
+    depends_on:
+      - es01
+      - es02
+      - es03
+    networks:
+      - elastic
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local
+  kibana:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
