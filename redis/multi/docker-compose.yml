@@ -1,7 +1,6 @@
 version: "3"
 services:
   redis-cluster:
-    platform: linux/arm64
     image: redis:6.2
     container_name: redis-master
     volumes: 
@@ -15,7 +14,6 @@ services:
 
   redis-node-1:
     network_mode: "service:redis-cluster"
-    platform: linux/arm64
     image: redis:6.2
     container_name: redis-slave1
     volumes:
@@ -24,7 +22,6 @@ services:
 
   redis-node-2:
     network_mode: "service:redis-cluster"
-    platform: linux/arm64
     image: redis:6.2
     container_name: redis-slave2
     volumes:
@@ -33,7 +30,6 @@ services:
 
   redis-node-3:
     network_mode: "service:redis-cluster"
-    platform: linux/arm64
     image: redis:6.2
     container_name: redis-slave3
     volumes:
@@ -42,7 +38,6 @@ services:
 
   redis-cluster-entry:
     network_mode: "service:redis-cluster"
-    platform: linux/arm64
     image: redis:6.2
     container_name: redis-cluster-entry
     command: redis-cli --cluster create 127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 --cluster-yes
@@ -53,7 +48,6 @@ services:
       - redis-node-3
 
   redis-stats:
-    platform: linux/arm64
     image: insready/redis-stat:latest
     container_name: redis-stats
     ports:
