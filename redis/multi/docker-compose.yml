@@ -1,0 +1,75 @@
+version: "3"
+services:
+  redis-cluster:
+    platform: linux/arm64
+    image: redis:6.2
+    container_name: redis-master
+    volumes: 
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
+      - 6380:6380
+      - 6381:6381
+      - 6382:6382      
+
+  redis-node-1:
+    network_mode: "service:redis-cluster"
+    platform: linux/arm64
+    image: redis:6.2
+    container_name: redis-slave1
+    volumes:
+      - ./redis1.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-node-2:
+    network_mode: "service:redis-cluster"
+    platform: linux/arm64
+    image: redis:6.2
+    container_name: redis-slave2
+    volumes:
+      - ./redis2.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-node-3:
+    network_mode: "service:redis-cluster"
+    platform: linux/arm64
+    image: redis:6.2
+    container_name: redis-slave3
+    volumes:
+      - ./redis3.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-cluster-entry:
+    network_mode: "service:redis-cluster"
+    platform: linux/arm64
+    image: redis:6.2
+    container_name: redis-cluster-entry
+    command: redis-cli --cluster create 127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 --cluster-yes
+    depends_on:
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+
+  redis-stats:
+    platform: linux/arm64
+    image: insready/redis-stat:latest
+    container_name: redis-stats
+    ports:
+      - '23790:63790'
+    depends_on:
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-cluster-entry
+    command: [
+        '--verbose', # 추가 정보 보기
+        '--server',
+        '127.0.0.1:6379',
+        '127.0.0.1:6380',
+        '127.0.0.1:6381',
+        '127.0.0.1:6382',
+      ]
+  
