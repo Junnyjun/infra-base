@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  jenkins-worker1:
+    build:
+      context: .
+      args:
+        - AGENT_URL=
+        - AGENT_CONNECT_URL=
+        - AGENT_SECRET=
+        - AGENT_WORKDIR=
+      dockerfile: dockerfile
+    restart: always
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
