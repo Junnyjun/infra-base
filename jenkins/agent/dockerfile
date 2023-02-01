@@ -15,7 +15,9 @@ RUN echo "AGENT_CONNECT_URL: $AGENT_CONNECT_URL"
 RUN echo "AGENT_SECRET : $AGENT_SECRET"
 RUN echo "AGENT_WORKDIR : $AGENT_WORKDIR"
 
-RUN apt-get update && apt-get install -y curl
+RUN apt update -y \
+&& apt upgrade -y \
+&& apt install -y curl git
 
 ENV TZ=Asia/Seoul
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
