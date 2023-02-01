@@ -1,0 +1,21 @@
+FROM openjdk:11-jdk
+
+ARG AGENT_URL
+ARG AGENT_CONNECT_URL
+ARG AGENT_SECRET
+ARG AGENT_WORKDIR
+
+ENV AGENT_URL=${AGENT_URL}
+ENV AGENT_CONNECT_URL=${AGENT_CONNECT_URL}
+ENV AGENT_SECRET=${AGENT_SECRET}
+ENV AGENT_WORKDIR=${AGENT_WORKDIR}
+
+RUN apt-get update && apt-get install -y curl
+
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN echo "$AGENT_SECRET" > secret-file
+RUN curl -sO $AGENT_URL
+
+CMD ["java","-jar","agent.jar","-jnlpUrl","$AGENT_CONNECT_URL","-secret","@secret-file","-workDir","$AGENT_WORKDIR"]
