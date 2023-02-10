@@ -16,7 +16,6 @@ sudo sysctl --system
 sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 
-
 echo "[Install k8s base package]"
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl
@@ -24,7 +23,6 @@ sudo apt-get install -y apt-transport-https ca-certificates curl
 echo "[signing k8s package]"
 sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 sudo echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
 
 echo "[Install k8s package]"
 sudo apt-get update
@@ -37,8 +35,7 @@ sudo systemctl restart kubelet
 
 echo "[container setting for k8s]"
 sudo mkdir /etc/docker
- 
- 
+
 sudo cat <<EOF | sudo tee /etc/docker/daemon.json
 {
 "exec-opts": ["native.cgroupdriver=systemd"],
@@ -49,18 +46,20 @@ sudo cat <<EOF | sudo tee /etc/docker/daemon.json
 "storage-driver": "overlay2"
 }
 EOF
-  
+
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
- 
- 
+
 sudo kubeadm reset
 
-echo "[Install k8s admin start]"
+echo "[k8s all authority]"
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+echo "[Install k8s admin start]"
 sudo kubeadm init
 
 echo "[Install k8s network install]"
-
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
