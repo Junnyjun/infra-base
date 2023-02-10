@@ -1,25 +1,3 @@
-echo "[INSTALL BASE PACKAGE]"
-sudo apt-get update
- 
-sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-
-echo "[INSTALL docker archive]"
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
-echo "[INSTALL signing keyring]"
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-
-echo "[INSTALL docker engine]"
-sudo apt-get update -y 
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-
 echo "[swap off ]"
 sudo swapoff -a && sudo sed -i '/swap/s/^/#/' /etc/fstab
 
@@ -60,6 +38,7 @@ sudo systemctl restart kubelet
 echo "[container setting for k8s]"
 sudo mkdir /etc/docker
  
+ 
 sudo cat <<EOF | sudo tee /etc/docker/daemon.json
 {
 "exec-opts": ["native.cgroupdriver=systemd"],
@@ -74,9 +53,14 @@ EOF
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
-
+ 
+ 
 sudo kubeadm reset
 
 echo "[Install k8s admin start]"
 
 sudo kubeadm init
+
+echo "[Install k8s network install]"
+
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
