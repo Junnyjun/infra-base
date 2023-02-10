@@ -17,7 +17,7 @@ sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 
 echo "[Install k8s base package]"
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl
 
 echo "[signing k8s package]"
@@ -25,7 +25,7 @@ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://pack
 sudo echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 echo "[Install k8s package]"
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
