@@ -54,7 +54,8 @@ sudo apt-mark hold kubelet kubeadm kubectl
 echo "[enable k8s package]"
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
-
+sudo rm /etc/containerd/config.toml
+sudo systemctl restart containerd
 
 #sudo kubeadm join 10.0.100.40:6443 --token zbgv72.v9ac8xhex128xjwp \
 #        --discovery-token-ca-cert-hash sha256:2193f25bad65918197d7b543e282327741bdd99748b1a6d879e1b4dc
