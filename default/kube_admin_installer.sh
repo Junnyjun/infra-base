@@ -60,7 +60,6 @@ sudo systemctl restart kubelet
 echo "[container setting for k8s]"
 sudo mkdir /etc/docker
  
- 
 sudo cat <<EOF | sudo tee /etc/docker/daemon.json
 {
 "exec-opts": ["native.cgroupdriver=systemd"],
@@ -75,8 +74,7 @@ EOF
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
- 
- 
+
 sudo kubeadm reset
 
 echo "[Install k8s admin start]"
