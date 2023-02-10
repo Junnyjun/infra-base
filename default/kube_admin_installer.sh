@@ -54,6 +54,11 @@ sudo apt-mark hold kubelet kubeadm kubectl
 echo "[enable k8s package]"
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
+sudo rm /etc/containerd/config.toml
+sudo systemctl restart containerd
+
+echo "[Install k8s admin start]"
+sudo kubeadm init
 
 echo "[container setting for k8s]"
 sudo mkdir /etc/docker
@@ -79,9 +84,6 @@ echo "[k8s all authority]"
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-echo "[Install k8s admin start]"
-sudo kubeadm init
 
 echo "[Install k8s network install]"
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
