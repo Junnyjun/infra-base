@@ -71,6 +71,10 @@ iptables -t mangle -X
 iptables -t raw -F
 iptables -t raw -X
 
+sudo systemctl stop apparmor
+sudo systemctl disable apparmor 
+sudo systemctl restart containerd.service
+
 sudo sysctl -w net.bridge.bridge-nf-call-iptables=1
 sudo sysctl -w net.ipv4.ip_forward=1
 
