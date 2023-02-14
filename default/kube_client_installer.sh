@@ -48,7 +48,8 @@ sudo echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] ht
 
 echo "[Install k8s package]"
 sudo apt-get update -y
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni 
+sudo apt-get install -y ipvsadm
 sudo apt-mark hold kubelet kubeadm kubectl
 
 echo "[enable k8s package]"
@@ -56,6 +57,23 @@ sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 sudo rm /etc/containerd/config.toml
 sudo systemctl restart containerd
+
+iptables --policy INPUT   ACCEPT
+iptables --policy OUTPUT  ACCEPT
+iptables --policy FORWARD ACCEPT
+iptables -Z # zero counters
+iptables -F # flush (delete) rules
+iptables -X # delete all extra chains
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -t raw -F
+iptables -t raw -X
+
+sudo sysctl -w net.bridge.bridge-nf-call-iptables=1
+sudo sysctl -w net.ipv4.ip_forward=1
+
 
 #sudo kubeadm join 10.0.100.40:6443 --token zbgv72.v9ac8xhex128xjwp \
 #        --discovery-token-ca-cert-hash sha256:2193f25bad65918197d7b543e282327741bdd99748b1a6d879e1b4dc
