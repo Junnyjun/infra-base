@@ -48,7 +48,8 @@ sudo echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] ht
 
 echo "[Install k8s package]"
 sudo apt-get update -y
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni 
+sudo apt-get install -y ipvsadm
 sudo apt-mark hold kubelet kubeadm kubectl
 
 echo "[enable k8s package]"
@@ -79,6 +80,29 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 
 sudo kubeadm reset
+
+iptables --policy INPUT   ACCEPT
+
+iptables --policy OUTPUT  ACCEPT
+
+iptables --policy FORWARD ACCEPT
+
+ 
+
+iptables -Z # zero counters
+
+iptables -F # flush (delete) rules
+
+iptables -X # delete all extra chains
+
+ 
+
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -t raw -F
+iptables -t raw -X
 
 echo "[Install k8s network install]"
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
