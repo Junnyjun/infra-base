@@ -97,6 +97,10 @@ iptables -t raw -X
 echo "[Install k8s network install]"
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
+sudo systemctl stop apparmor
+sudo systemctl disable apparmor 
+sudo systemctl restart containerd.service
+
 sudo sysctl -w net.bridge.bridge-nf-call-iptables=1
 sudo sysctl -w net.ipv4.ip_forward=1
 
