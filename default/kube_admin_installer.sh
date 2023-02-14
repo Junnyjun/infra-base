@@ -82,21 +82,11 @@ sudo systemctl restart docker
 sudo kubeadm reset
 
 iptables --policy INPUT   ACCEPT
-
 iptables --policy OUTPUT  ACCEPT
-
 iptables --policy FORWARD ACCEPT
-
- 
-
 iptables -Z # zero counters
-
 iptables -F # flush (delete) rules
-
 iptables -X # delete all extra chains
-
- 
-
 iptables -t nat -F
 iptables -t nat -X
 iptables -t mangle -F
