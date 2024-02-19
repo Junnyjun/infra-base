@@ -1,0 +1,19 @@
+{
+  "builders": [{
+    "type": "docker",
+    "image": "ubuntu:14.04",
+    "export_path": "nacyot-ubuntu-wget.tar"
+  }],
+  "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "apt-get update",
+        "apt-get install -y wget"
+      ]
+  }],
+  "post-processors": [{
+      "type": "docker-import",
+      "repository": "junnyland/defauly",
+      "tag": "junnyland"
+  }]
+}
